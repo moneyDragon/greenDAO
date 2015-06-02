@@ -36,6 +36,13 @@ public class ExampleDaoGenerator {
         addNote(schema);
         addCustomerOrder(schema);
 
+        // 模拟生成搜狐视频相关表
+        addLocalMedia(schema);
+        addLocalPlayHistory(schema);
+        addAmericanNeighbour(schema);
+        addApkDownload(schema);
+        addPlayHistory(schema);
+
         new DaoGenerator().generateAll(schema, "../DaoExample/src-gen");
     }
 
@@ -62,6 +69,77 @@ public class ExampleDaoGenerator {
         ToMany customerToOrders = customer.addToMany(order, customerId);
         customerToOrders.setName("orders");
         customerToOrders.orderAsc(orderDate);
+    }
+
+    private static void addLocalMedia(Schema schema) {
+        Entity localMedia = schema.addEntity("LocalMedia");
+
+        localMedia.addIdProperty();
+        localMedia.addStringProperty("dir");
+        localMedia.addStringProperty("file");
+        localMedia.addIntProperty("size");
+    }
+
+    private static void addLocalPlayHistory(Schema schema) {
+        Entity lp = schema.addEntity("LocalPlayHistory");
+        lp.addIdProperty();
+        lp.addStringProperty("videoTitle");
+        lp.addStringProperty("playedTime");
+        lp.addIntProperty("tvLength");
+        lp.addStringProperty("lastWatchTime");
+        lp.addStringProperty("localUrl");
+    }
+
+    private static void addAmericanNeighbour(Schema schema) {
+        Entity neighBour = schema.addEntity("AmericanNeighbour");
+        neighBour.addIdProperty();
+        neighBour.addIntProperty("channel_id");
+        neighBour.addStringProperty("request_url");
+        neighBour.addStringProperty("reponse");
+        neighBour.addIntProperty("list_index");
+        neighBour.addIntProperty("update_time");
+        neighBour.addIntProperty("operation_type");
+    }
+
+    private static void addApkDownload(Schema schema) {
+        Entity down = schema.addEntity("ApkDownload");
+        down.addStringProperty("package_name");
+        down.addIntProperty("version");
+        down.addStringProperty("tip");
+        down.addStringProperty("name");
+        down.addIntProperty("downing_state");
+        down.addIntProperty("total_filesize");
+        down.addIntProperty("download_beginning");
+        down.addIntProperty("downloaded_size");
+        down.addIntProperty("download_percent");
+        down.addIntProperty("create_time");
+        down.addStringProperty("download_url");
+        down.addStringProperty("save_dir");
+        down.addStringProperty("save_name");
+    }
+
+    private static void addPlayHistory(Schema schema) {
+        Entity his = schema.addEntity("PlayHistory");
+        his.addIdProperty();
+        his.addStringProperty("playId");
+        his.addStringProperty("subjectId");
+        his.addStringProperty("videoTitle");
+        his.addStringProperty("playedTime");
+        his.addStringProperty("clientType");
+        his.addStringProperty("definition");
+        his.addStringProperty("episode");
+        his.addStringProperty("picPath");
+        his.addStringProperty("categoryId");
+        his.addIntProperty("tvLength");
+        his.addIntProperty("isSynchronized");
+        his.addStringProperty("albumName");
+        his.addIntProperty("nextplayId");
+        his.addStringProperty("lastWatchTime");
+        his.addStringProperty("passport");
+        his.addStringProperty("localUrl");
+        his.addIntProperty("tvisfee");
+        his.addIntProperty("real_playorder");
+        his.addIntProperty("site");
     }
 
 }

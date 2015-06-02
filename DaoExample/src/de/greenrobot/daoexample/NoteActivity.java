@@ -17,8 +17,12 @@ package de.greenrobot.daoexample;
 
 import java.text.DateFormat;
 import java.util.Date;
+import java.util.List;
 
 import android.app.ListActivity;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.ProviderInfo;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -33,6 +37,7 @@ import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
+
 import de.greenrobot.daoexample.DaoMaster.DevOpenHelper;
 
 public class NoteActivity extends ListActivity {
@@ -71,6 +76,18 @@ public class NoteActivity extends ListActivity {
 
         editText = (EditText) findViewById(R.id.editTextNote);
         addUiListeners();
+        
+        List<PackageInfo> packs = getBaseContext().getPackageManager().getInstalledPackages(PackageManager.GET_PROVIDERS);
+        if (packs != null) {
+            for (PackageInfo pack : packs) { 
+                ProviderInfo[] providers = pack.providers; 
+                if (providers != null) { 
+                    for (ProviderInfo provider : providers) { 
+                        System.out.println(provider.readPermission+"   "+provider.writePermission+"  "+provider.authority);
+                    } 
+                }
+            }
+        }
     }
 
     protected void addUiListeners() {
