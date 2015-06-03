@@ -1,0 +1,4 @@
+#org.springsource.ide.eclipse.gradle.core.preferences.GradleProjectPreferences
+#Wed Jun 03 18:25:32 CST 2015
+build.family.org.gradle.tooling.model.eclipse.HierarchicalEclipseProject=;DaoCore;DaoExampleGenerator;DaoGenerator;DaoTest;
+org.springsource.ide.eclipse.gradle.rootprojectloc=
