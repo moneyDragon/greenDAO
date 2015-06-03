@@ -120,6 +120,7 @@ public class ExampleDaoGenerator {
 
     private static void addPlayHistory(Schema schema) {
         Entity his = schema.addEntity("PlayHistory");
+        
         his.addIdProperty();
         his.addStringProperty("playId");
         his.addStringProperty("subjectId");
