@@ -35,5 +35,14 @@
         android:text="sohu"
         android:textColor="#000000"
         android:textSize="15sp" />
+    
+    <Button
+        android:id="@+id/button4"
+        android:layout_width="fill_parent"
+        android:layout_height="40dp"
+        android:layout_margin="20dp"
+        android:text="tool"
+        android:textColor="#000000"
+        android:textSize="15sp" />
 
 </LinearLayout>

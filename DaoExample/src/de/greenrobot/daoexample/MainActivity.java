@@ -14,6 +14,8 @@ public class MainActivity extends Activity implements OnClickListener {
     private Button mBtnCustomer;
 
     private Button mBtnSohu;
+    
+    private Button mBtnTool;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,6 +34,8 @@ public class MainActivity extends Activity implements OnClickListener {
         mBtnCustomer = (Button) findViewById(R.id.button2);
 
         mBtnSohu = (Button) findViewById(R.id.button3);
+        
+        mBtnTool = (Button) findViewById(R.id.button4);
     }
 
     private void initData() {
@@ -42,6 +46,7 @@ public class MainActivity extends Activity implements OnClickListener {
         mBtnNote.setOnClickListener(this);
         mBtnCustomer.setOnClickListener(this);
         mBtnSohu.setOnClickListener(this);
+        mBtnTool.setOnClickListener(this);
     }
 
     @Override
@@ -63,6 +68,9 @@ public class MainActivity extends Activity implements OnClickListener {
             case R.id.button2:
                 break;
             case R.id.button3:
+                break;
+            case R.id.button4:
+                startActivity(new Intent(getApplicationContext(), ToolActivity.class));
                 break;
         }
 
