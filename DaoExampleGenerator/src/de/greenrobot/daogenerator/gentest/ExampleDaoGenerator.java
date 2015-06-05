@@ -15,8 +15,11 @@
  */
 package de.greenrobot.daogenerator.gentest;
 
+import java.util.List;
+
 import de.greenrobot.daogenerator.DaoGenerator;
 import de.greenrobot.daogenerator.Entity;
+import de.greenrobot.daogenerator.Index;
 import de.greenrobot.daogenerator.Property;
 import de.greenrobot.daogenerator.Schema;
 import de.greenrobot.daogenerator.ToMany;
@@ -120,8 +123,9 @@ public class ExampleDaoGenerator {
 
     private static void addPlayHistory(Schema schema) {
         Entity his = schema.addEntity("PlayHistory");
-        
-        his.addIdProperty();
+
+        his.addIdProperty().autoincrement();
+
         his.addStringProperty("playId");
         his.addStringProperty("subjectId");
         his.addStringProperty("videoTitle");
@@ -141,6 +145,18 @@ public class ExampleDaoGenerator {
         his.addIntProperty("tvisfee");
         his.addIntProperty("real_playorder");
         his.addIntProperty("site");
+
+        List<Property> pros = his.getProperties();
+        if (pros != null && pros.size() > 0) {
+            for (Property p : pros) {
+                if ("playId".equals(p.getPropertyName())) {
+                    Index index = new Index();
+                    index.addProperty(p);
+                    his.addIndex(index);
+                    break;
+                }
+            }
+        }
     }
 
 }

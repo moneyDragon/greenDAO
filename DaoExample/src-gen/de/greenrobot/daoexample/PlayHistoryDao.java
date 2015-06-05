@@ -58,7 +58,7 @@ public class PlayHistoryDao extends AbstractDao<PlayHistory, Long> {
     public static void createTable(SQLiteDatabase db, boolean ifNotExists) {
         String constraint = ifNotExists? "IF NOT EXISTS ": "";
         db.execSQL("CREATE TABLE " + constraint + "'PLAY_HISTORY' (" + //
-                "'_id' INTEGER PRIMARY KEY ," + // 0: id
+                "'_id' INTEGER PRIMARY KEY AUTOINCREMENT ," + // 0: id
                 "'PLAY_ID' TEXT," + // 1: playId
                 "'SUBJECT_ID' TEXT," + // 2: subjectId
                 "'VIDEO_TITLE' TEXT," + // 3: videoTitle
@@ -78,6 +78,9 @@ public class PlayHistoryDao extends AbstractDao<PlayHistory, Long> {
                 "'TVISFEE' INTEGER," + // 17: tvisfee
                 "'REAL_PLAYORDER' INTEGER," + // 18: real_playorder
                 "'SITE' INTEGER);"); // 19: site
+        // Add Indexes
+        db.execSQL("CREATE INDEX " + constraint + "IDX_PLAY_HISTORY_PLAY_ID ON PLAY_HISTORY" +
+                " (PLAY_ID);");
     }
 
     /** Drops the underlying database table. */

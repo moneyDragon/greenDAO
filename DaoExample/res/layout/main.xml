@@ -24,6 +24,52 @@
 			android:id="@+id/buttonAdd"
 			android:onClick="onMyButtonClick"></Button>
 	</LinearLayout>
+	
+	<Button
+        android:id="@+id/btn_add"
+        android:layout_width="fill_parent"
+        android:layout_height="40dp"
+        android:layout_margin="20dp"
+        android:text="addAll"
+        android:textColor="#000000"
+        android:textSize="15sp" />
+	
+	<Button
+        android:id="@+id/btn_delete"
+        android:layout_width="fill_parent"
+        android:layout_height="40dp"
+        android:layout_margin="20dp"
+        android:text="deleteAll"
+        android:textColor="#000000"
+        android:textSize="15sp" />
+	
+	<Button
+        android:id="@+id/btn_query_count"
+        android:layout_width="fill_parent"
+        android:layout_height="40dp"
+        android:layout_margin="20dp"
+        android:text="queryCount"
+        android:textColor="#000000"
+        android:textSize="15sp" />
+	
+	<Button
+        android:id="@+id/btn_query_all"
+        android:layout_width="fill_parent"
+        android:layout_height="40dp"
+        android:layout_margin="20dp"
+        android:text="queryAll"
+        android:textColor="#000000"
+        android:textSize="15sp" />
+	
+	<Button
+        android:id="@+id/btn_query_with_param"
+        android:layout_width="fill_parent"
+        android:layout_height="40dp"
+        android:layout_margin="20dp"
+        android:text="queryWithParam"
+        android:textColor="#000000"
+        android:textSize="15sp" />
+	
 	<ListView
 		android:layout_height="wrap_content"
 		android:id="@android:id/list"

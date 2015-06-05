@@ -17,6 +17,7 @@ package de.greenrobot.daoexample;
 
 import java.text.DateFormat;
 import java.util.Date;
+import java.util.List;
 
 import android.app.ListActivity;
 import android.database.Cursor;
@@ -27,26 +28,41 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.inputmethod.EditorInfo;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 
-import de.greenrobot.daoexample.DaoMaster.DevOpenHelper;
+import org.apache.commons.lang3.time.StopWatch;
 
-public class NoteActivity extends ListActivity {
+import de.greenrobot.dao.query.QueryBuilder;
+import de.greenrobot.daoexample.DaoMaster.DevOpenHelper;
+import de.greenrobot.daoexample.PlayHistoryDao.Properties;
+
+public class NoteActivity extends ListActivity implements OnClickListener {
 
     private SQLiteDatabase db;
 
     private EditText editText;
+    private Button mBtnAddAll;
+    private Button mBtnDeleteAll;
+    private Button mBtnQueryCount;
+    private Button mBtnQueryAll;
+    private Button mBtnQueryWithParam;
 
     private DaoMaster daoMaster;
     private DaoSession daoSession;
     private NoteDao noteDao;
+    private PlayHistoryDao playHistoryDao;
 
     private Cursor cursor;
+    private StopWatch sw;
+
+    private static final int DATA_COUNT = 550000;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -60,6 +76,9 @@ public class NoteActivity extends ListActivity {
         daoSession = daoMaster.newSession();
         noteDao = daoSession.getNoteDao();
 
+        playHistoryDao = daoSession.getPlayHistoryDao();
+        sw = new StopWatch();
+
         String textColumn = NoteDao.Properties.Text.columnName;
         String orderBy = textColumn + " COLLATE LOCALIZED ASC";
         cursor = db.query(noteDao.getTablename(), noteDao.getAllColumns(), null, null, null, null, orderBy);
@@ -71,7 +90,18 @@ public class NoteActivity extends ListActivity {
         setListAdapter(adapter);
 
         editText = (EditText) findViewById(R.id.editTextNote);
+
+        initView();
+
         addUiListeners();
+    }
+
+    private void initView() {
+        mBtnAddAll = (Button) findViewById(R.id.btn_add);
+        mBtnDeleteAll = (Button) findViewById(R.id.btn_delete);
+        mBtnQueryCount = (Button) findViewById(R.id.btn_query_count);
+        mBtnQueryAll = (Button) findViewById(R.id.btn_query_all);
+        mBtnQueryWithParam = (Button) findViewById(R.id.btn_query_with_param);
     }
 
     protected void addUiListeners() {
@@ -105,6 +135,12 @@ public class NoteActivity extends ListActivity {
             public void afterTextChanged(Editable s) {
             }
         });
+
+        mBtnAddAll.setOnClickListener(this);
+        mBtnDeleteAll.setOnClickListener(this);
+        mBtnQueryCount.setOnClickListener(this);
+        mBtnQueryAll.setOnClickListener(this);
+        mBtnQueryWithParam.setOnClickListener(this);
     }
 
     public void onMyButtonClick(View view) {
@@ -131,4 +167,100 @@ public class NoteActivity extends ListActivity {
         cursor.requery();
     }
 
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.btn_add:
+                batchInsert();
+                break;
+            case R.id.btn_delete:
+                batchDelete();
+                break;
+            case R.id.btn_query_count:
+                long count = queryCount();
+                editText.setText(count + "");
+                break;
+            case R.id.btn_query_all:
+                queryAll();
+                break;
+            case R.id.btn_query_with_param:
+                List<PlayHistory> l = queryWithParam();
+                if (l != null && l.size() > 0) {
+                    editText.setText(l.size() + "  " + l.get(0).getId() + "  " + l.get(0).getPlayId());
+                } else {
+                    editText.setText("not found");
+                }
+                break;
+            default:
+                break;
+        }
+    }
+
+    private void batchInsert() {
+        PlayHistory h = new PlayHistory();
+        sw.start();
+
+        db.beginTransaction();
+        for (int i = 0; i < DATA_COUNT; i++) {
+
+            h.setId(null);
+            h.setPlayId(i + "");
+            playHistoryDao.insert(h);
+            if ((i + 1) % 50000 == 0) {
+                db.setTransactionSuccessful();
+                db.endTransaction();
+                sw.split();
+                System.out.println("inserted " + (i + 1) + "  " + sw.toSplitString() + "  " + sw.toString());
+                db.beginTransaction();
+            }
+        }
+        db.setTransactionSuccessful();
+        db.endTransaction();
+        sw.split();
+        System.out.println("total time " + sw.toSplitString() + "  " + sw.toString());
+        sw.stop();
+        sw.reset();
+    }
+
+    private void batchDelete() {
+        sw.start();
+        playHistoryDao.deleteAll();
+        sw.split();
+        System.out.println("total time " + sw.toSplitString() + "  " + sw.toString());
+        sw.stop();
+        sw.reset();
+    }
+
+    private long queryCount() {
+        return playHistoryDao.count();
+    }
+
+    private List<PlayHistory> queryAll() {
+        sw.start();
+        
+        List<PlayHistory> l = playHistoryDao.loadAll();
+        
+        sw.split();
+        System.out.println("total time " + sw.toSplitString() + "  " + sw.toString());
+        sw.stop();
+        sw.reset();
+        
+        return l;
+    }
+
+    private List<PlayHistory> queryWithParam() {
+        sw.start();
+
+        QueryBuilder<PlayHistory> qb = playHistoryDao.queryBuilder();
+        qb.where(Properties.PlayId.eq(editText.getText()));
+
+        List<PlayHistory> l = qb.list();
+        
+        sw.split();
+        System.out.println("total time " + sw.toSplitString() + "  " + sw.toString());
+        sw.stop();
+        sw.reset();
+        
+        return l;
+    }
 }
