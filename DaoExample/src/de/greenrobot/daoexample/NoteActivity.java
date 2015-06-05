@@ -16,6 +16,7 @@
 package de.greenrobot.daoexample;
 
 import java.text.DateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -197,25 +198,49 @@ public class NoteActivity extends ListActivity implements OnClickListener {
     }
 
     private void batchInsert() {
-        PlayHistory h = new PlayHistory();
+        // PlayHistory h = new PlayHistory();
+        // sw.start();
+        //
+        // db.beginTransaction();
+        // for (int i = 0; i < DATA_COUNT; i++) {
+        //
+        // h.setId(null);
+        // h.setPlayId(i + "");
+        // playHistoryDao.insert(h);
+        // if ((i + 1) % 50000 == 0) {
+        // db.setTransactionSuccessful();
+        // db.endTransaction();
+        // sw.split();
+        // System.out.println("inserted " + (i + 1) + "  " + sw.toSplitString()
+        // + "  " + sw.toString());
+        // db.beginTransaction();
+        // }
+        // }
+        // db.setTransactionSuccessful();
+        // db.endTransaction();
+        // sw.split();
+        // System.out.println("total time " + sw.toSplitString() + "  " +
+        // sw.toString());
+        // sw.stop();
+        // sw.reset();
+
         sw.start();
+        List<PlayHistory> entities = new ArrayList<PlayHistory>();
 
-        db.beginTransaction();
         for (int i = 0; i < DATA_COUNT; i++) {
-
+            
+            PlayHistory h = new PlayHistory();
             h.setId(null);
             h.setPlayId(i + "");
-            playHistoryDao.insert(h);
-            if ((i + 1) % 50000 == 0) {
-                db.setTransactionSuccessful();
-                db.endTransaction();
+            entities.add(h);
+            if ((i + 1) % 50000 == 0 || i == DATA_COUNT-1) {
+                playHistoryDao.insertInTx(entities);
                 sw.split();
                 System.out.println("inserted " + (i + 1) + "  " + sw.toSplitString() + "  " + sw.toString());
-                db.beginTransaction();
+                entities.clear();
             }
         }
-        db.setTransactionSuccessful();
-        db.endTransaction();
+
         sw.split();
         System.out.println("total time " + sw.toSplitString() + "  " + sw.toString());
         sw.stop();
@@ -237,14 +262,14 @@ public class NoteActivity extends ListActivity implements OnClickListener {
 
     private List<PlayHistory> queryAll() {
         sw.start();
-        
+
         List<PlayHistory> l = playHistoryDao.loadAll();
-        
+
         sw.split();
         System.out.println("total time " + sw.toSplitString() + "  " + sw.toString());
         sw.stop();
         sw.reset();
-        
+
         return l;
     }
 
@@ -255,12 +280,12 @@ public class NoteActivity extends ListActivity implements OnClickListener {
         qb.where(Properties.PlayId.eq(editText.getText()));
 
         List<PlayHistory> l = qb.list();
-        
+
         sw.split();
         System.out.println("total time " + sw.toSplitString() + "  " + sw.toString());
         sw.stop();
         sw.reset();
-        
+
         return l;
     }
 }
