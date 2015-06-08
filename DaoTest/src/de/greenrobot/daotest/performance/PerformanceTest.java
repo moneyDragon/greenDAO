@@ -41,7 +41,7 @@ public abstract class PerformanceTest<D extends AbstractDao<T, K>, T, K> extends
         // runTests(1000);
         // runTests(1000);
         // runTests(1000);
-        // runTests(1000);
+         runTests(1000);
     }
 
     protected void runTests(int entityCount) {

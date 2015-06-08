@@ -3,10 +3,12 @@ package de.greenrobot.daoexample;
 import java.util.List;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ProviderInfo;
 import android.os.Bundle;
+import android.telephony.TelephonyManager;
 
 public class ToolActivity extends Activity {
 
@@ -26,6 +28,7 @@ public class ToolActivity extends Activity {
     private void initData() {
 
         testShortcutList();
+        getPhoneNum();
     }
 
     private void initListener() {
@@ -46,6 +49,12 @@ public class ToolActivity extends Activity {
                 }
             }
         }
+    }
+    
+    private void getPhoneNum(){
+        TelephonyManager mTelephonyMgr = (TelephonyManager)getBaseContext().getSystemService(Context.TELEPHONY_SERVICE);
+        String num = mTelephonyMgr.getLine1Number();
+        System.out.println(num+"");
     }
 
     @Override

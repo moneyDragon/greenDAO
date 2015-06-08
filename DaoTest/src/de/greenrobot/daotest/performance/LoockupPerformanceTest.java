@@ -43,7 +43,7 @@ public class LoockupPerformanceTest extends TestCase {
         // runTests(100);
         // runTests(1000);
         // runTests(10000);
-        // runTests(100000); // hash: 1485/420ms; sparse: 148196/196ms
+         runTests(100000); // hash: 1485/420ms; sparse: 148196/196ms
         DaoLog.d("testHashMapPerformance DONE");
     }
 
@@ -65,11 +65,11 @@ public class LoockupPerformanceTest extends TestCase {
             }
         }
         for (int i = 0; i < 3; i++) {
-            runMapTest(new HashMap<Long, Object>(count), keys, "hashmap");
+//            runMapTest(new HashMap<Long, Object>(count), keys, "hashmap");
             // runMapTest(new WeakHashMap<Long, Object>(count), keys, "weakhashmap");
             // runMapTest(new ConcurrentHashMap<Long, Object>(count), keys, "concurrent-hashmap");
-            // runLongSparseArrayTest(keys);
-            runLongHashMap(keys);
+//             runLongSparseArrayTest(keys);
+//            runLongHashMap(keys);
             runLongHashMapAmarena2DZechnerTest(keys);
             // runLongHashMapJDBMTest(keys);
             DaoLog.d("-----------------------------------");
