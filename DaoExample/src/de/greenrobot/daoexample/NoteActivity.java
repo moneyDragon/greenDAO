@@ -40,6 +40,7 @@ import android.widget.TextView.OnEditorActionListener;
 
 import org.apache.commons.lang3.time.StopWatch;
 
+import de.greenrobot.dao.query.DeleteQuery;
 import de.greenrobot.dao.query.QueryBuilder;
 import de.greenrobot.daoexample.DaoMaster.DevOpenHelper;
 import de.greenrobot.daoexample.PlayHistoryDao.Properties;
@@ -51,6 +52,7 @@ public class NoteActivity extends ListActivity implements OnClickListener {
     private EditText editText;
     private Button mBtnAddAll;
     private Button mBtnDeleteAll;
+    private Button mBtnDeleteByCount;
     private Button mBtnQueryCount;
     private Button mBtnQueryAll;
     private Button mBtnQueryWithParam;
@@ -64,6 +66,8 @@ public class NoteActivity extends ListActivity implements OnClickListener {
     private StopWatch sw;
 
     private static final int DATA_COUNT = 550000;
+
+    private static final int DELETE_COUNT = 100000;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -100,6 +104,7 @@ public class NoteActivity extends ListActivity implements OnClickListener {
     private void initView() {
         mBtnAddAll = (Button) findViewById(R.id.btn_add);
         mBtnDeleteAll = (Button) findViewById(R.id.btn_delete);
+        mBtnDeleteByCount = (Button) findViewById(R.id.btn_delete_by_count);
         mBtnQueryCount = (Button) findViewById(R.id.btn_query_count);
         mBtnQueryAll = (Button) findViewById(R.id.btn_query_all);
         mBtnQueryWithParam = (Button) findViewById(R.id.btn_query_with_param);
@@ -139,6 +144,7 @@ public class NoteActivity extends ListActivity implements OnClickListener {
 
         mBtnAddAll.setOnClickListener(this);
         mBtnDeleteAll.setOnClickListener(this);
+        mBtnDeleteByCount.setOnClickListener(this);
         mBtnQueryCount.setOnClickListener(this);
         mBtnQueryAll.setOnClickListener(this);
         mBtnQueryWithParam.setOnClickListener(this);
@@ -172,10 +178,29 @@ public class NoteActivity extends ListActivity implements OnClickListener {
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_add:
-                batchInsert();
+                int iCount = DATA_COUNT;
+                if (!"".equals(editText.getText().toString())) {
+                    try {
+                        iCount = Integer.parseInt(editText.getText().toString());
+                    } catch (Exception e) {
+                        ;
+                    }
+                }
+                batchInsert(iCount);
                 break;
             case R.id.btn_delete:
                 batchDelete();
+                break;
+            case R.id.btn_delete_by_count:
+                int dCount = DELETE_COUNT;
+                if (!"".equals(editText.getText().toString())) {
+                    try {
+                        dCount = Integer.parseInt(editText.getText().toString());
+                    } catch (Exception e) {
+                        ;
+                    }
+                }
+                deleteByCount(dCount);
                 break;
             case R.id.btn_query_count:
                 long count = queryCount();
@@ -197,7 +222,7 @@ public class NoteActivity extends ListActivity implements OnClickListener {
         }
     }
 
-    private void batchInsert() {
+    private void batchInsert(int count) {
         // PlayHistory h = new PlayHistory();
         // sw.start();
         //
@@ -227,13 +252,13 @@ public class NoteActivity extends ListActivity implements OnClickListener {
         sw.start();
         List<PlayHistory> entities = new ArrayList<PlayHistory>();
 
-        for (int i = 0; i < DATA_COUNT; i++) {
-            
+        for (int i = 0; i < count; i++) {
+
             PlayHistory h = new PlayHistory();
             h.setId(null);
             h.setPlayId(i + "");
             entities.add(h);
-            if ((i + 1) % 50000 == 0 || i == DATA_COUNT-1) {
+            if ((i + 1) % 50000 == 0 || i == count - 1) {
                 playHistoryDao.insertInTx(entities);
                 sw.split();
                 System.out.println("inserted " + (i + 1) + "  " + sw.toSplitString() + "  " + sw.toString());
@@ -287,5 +312,19 @@ public class NoteActivity extends ListActivity implements OnClickListener {
         sw.reset();
 
         return l;
+    }
+
+    private void deleteByCount(int count) {
+        sw.start();
+
+        QueryBuilder<PlayHistory> qb = playHistoryDao.queryBuilder();
+        qb.limit(count);
+        DeleteQuery<PlayHistory> deleteQuery = qb.buildDelete();
+        deleteQuery.executeDeleteWithoutDetachingEntities();
+
+        sw.split();
+        System.out.println("total time " + sw.toSplitString() + "  deleted: " + count);
+        sw.stop();
+        sw.reset();
     }
 }
