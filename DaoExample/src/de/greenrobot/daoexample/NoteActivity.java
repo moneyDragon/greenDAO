@@ -42,6 +42,7 @@ import org.apache.commons.lang3.time.StopWatch;
 
 import de.greenrobot.dao.query.DeleteQuery;
 import de.greenrobot.dao.query.QueryBuilder;
+import de.greenrobot.dao.query.WhereCondition;
 import de.greenrobot.daoexample.DaoMaster.DevOpenHelper;
 import de.greenrobot.daoexample.PlayHistoryDao.Properties;
 
@@ -163,7 +164,6 @@ public class NoteActivity extends ListActivity implements OnClickListener {
         Note note = new Note(null, noteText, comment, new Date());
         noteDao.insert(note);
         Log.d("DaoExample", "Inserted new note, ID: " + note.getId());
-
         cursor.requery();
     }
 
@@ -223,32 +223,6 @@ public class NoteActivity extends ListActivity implements OnClickListener {
     }
 
     private void batchInsert(int count) {
-        // PlayHistory h = new PlayHistory();
-        // sw.start();
-        //
-        // db.beginTransaction();
-        // for (int i = 0; i < DATA_COUNT; i++) {
-        //
-        // h.setId(null);
-        // h.setPlayId(i + "");
-        // playHistoryDao.insert(h);
-        // if ((i + 1) % 50000 == 0) {
-        // db.setTransactionSuccessful();
-        // db.endTransaction();
-        // sw.split();
-        // System.out.println("inserted " + (i + 1) + "  " + sw.toSplitString()
-        // + "  " + sw.toString());
-        // db.beginTransaction();
-        // }
-        // }
-        // db.setTransactionSuccessful();
-        // db.endTransaction();
-        // sw.split();
-        // System.out.println("total time " + sw.toSplitString() + "  " +
-        // sw.toString());
-        // sw.stop();
-        // sw.reset();
-
         sw.start();
         List<PlayHistory> entities = new ArrayList<PlayHistory>();
 

@@ -20,9 +20,11 @@ package de.greenrobot.daotest.performance;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
+import junit.framework.TestCase;
+
 import de.greenrobot.dao.DaoLog;
 
-public class ReflectionPerformanceTest // extends TestCase
+public class ReflectionPerformanceTest extends TestCase
 {
 
     int intValue;
