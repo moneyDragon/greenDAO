@@ -34,7 +34,8 @@ import de.greenrobot.daogenerator.ToMany;
 public class ExampleDaoGenerator {
 
     public static void main(String[] args) throws Exception {
-        Schema schema = new Schema(1000, "de.greenrobot.daoexample");
+        Schema schema = new Schema(1, "de.greenrobot.daoexample");
+        schema.enableKeepSectionsByDefault();
 
         addNote(schema);
         addCustomerOrder(schema);

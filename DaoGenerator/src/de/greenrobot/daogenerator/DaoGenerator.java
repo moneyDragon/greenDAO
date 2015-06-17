@@ -120,8 +120,11 @@ public class DaoGenerator {
                         + "ContentProvider", schema, entity, additionalObjectsForTemplate);
             }
         }
-        generate(templateDaoMaster, outDirFile, schema.getDefaultJavaPackageDao(), "DaoMaster", schema, null);
-        generate(templateDaoSession, outDirFile, schema.getDefaultJavaPackageDao(), "DaoSession", schema, null);
+        Entity keepEntity = new Entity(schema, "keepEntity");
+        keepEntity.setHasKeepSections(true);
+        
+        generate(templateDaoMaster, outDirFile, schema.getDefaultJavaPackageDao(), "DaoMaster", schema, keepEntity);
+        generate(templateDaoSession, outDirFile, schema.getDefaultJavaPackageDao(), "DaoSession", schema, keepEntity);
 
         long time = System.currentTimeMillis() - start;
         System.out.println("Processed " + entities.size() + " entities in " + time + "ms");
