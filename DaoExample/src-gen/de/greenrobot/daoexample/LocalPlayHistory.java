@@ -15,6 +15,7 @@ public class LocalPlayHistory {
     private Integer tvLength;
     private String lastWatchTime;
     private String localUrl;
+    private String localUrlNew;
 
     // KEEP FIELDS - put your custom fields here
     // KEEP FIELDS END
@@ -26,13 +27,14 @@ public class LocalPlayHistory {
         this.id = id;
     }
 
-    public LocalPlayHistory(Long id, String videoTitle, String playedTime, Integer tvLength, String lastWatchTime, String localUrl) {
+    public LocalPlayHistory(Long id, String videoTitle, String playedTime, Integer tvLength, String lastWatchTime, String localUrl, String localUrlNew) {
         this.id = id;
         this.videoTitle = videoTitle;
         this.playedTime = playedTime;
         this.tvLength = tvLength;
         this.lastWatchTime = lastWatchTime;
         this.localUrl = localUrl;
+        this.localUrlNew = localUrlNew;
     }
 
     public Long getId() {
@@ -81,6 +83,14 @@ public class LocalPlayHistory {
 
     public void setLocalUrl(String localUrl) {
         this.localUrl = localUrl;
+    }
+
+    public String getLocalUrlNew() {
+        return localUrlNew;
+    }
+
+    public void setLocalUrlNew(String localUrlNew) {
+        this.localUrlNew = localUrlNew;
     }
 
     // KEEP METHODS - put your custom methods here

@@ -16,6 +16,7 @@ public class AmericanNeighbour {
     private Integer list_index;
     private Integer update_time;
     private Integer operation_type;
+    private String operation;
 
     // KEEP FIELDS - put your custom fields here
     // KEEP FIELDS END
@@ -27,7 +28,7 @@ public class AmericanNeighbour {
         this.id = id;
     }
 
-    public AmericanNeighbour(Long id, Integer channel_id, String request_url, String reponse, Integer list_index, Integer update_time, Integer operation_type) {
+    public AmericanNeighbour(Long id, Integer channel_id, String request_url, String reponse, Integer list_index, Integer update_time, Integer operation_type, String operation) {
         this.id = id;
         this.channel_id = channel_id;
         this.request_url = request_url;
@@ -35,6 +36,7 @@ public class AmericanNeighbour {
         this.list_index = list_index;
         this.update_time = update_time;
         this.operation_type = operation_type;
+        this.operation = operation;
     }
 
     public Long getId() {
@@ -91,6 +93,14 @@ public class AmericanNeighbour {
 
     public void setOperation_type(Integer operation_type) {
         this.operation_type = operation_type;
+    }
+
+    public String getOperation() {
+        return operation;
+    }
+
+    public void setOperation(String operation) {
+        this.operation = operation;
     }
 
     // KEEP METHODS - put your custom methods here

@@ -33,24 +33,55 @@ import de.greenrobot.daogenerator.ToMany;
  */
 public class ExampleDaoGenerator {
 
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) {
+        generateDbV2();
+    }
+    
+    private static void generateDbV1() {
         Schema schema = new Schema(1, "de.greenrobot.daoexample");
         schema.enableKeepSectionsByDefault();
 
-        addNote(schema);
-        addCustomerOrder(schema);
+        addNoteV1(schema);
+        addCustomerOrderV1(schema);
+        addLocalMediaV1(schema);
+        addLocalPlayHistoryV1(schema);
+        addAmericanNeighbourV1(schema);
+        addPlayHistoryV1(schema);
+        
+        try {
+            new DaoGenerator().generateAll(schema, "../DaoExample/src-gen");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    
+    private static void generateDbV2() {
+        Schema schema = new Schema(2, "de.greenrobot.daoexample");
+        schema.enableKeepSectionsByDefault();
 
-        // 模拟生成搜狐视频相关表
-        addLocalMedia(schema);
-        addLocalPlayHistory(schema);
-        addAmericanNeighbour(schema);
-        addApkDownload(schema);
-        addPlayHistory(schema);
+        //保留的上一个版本中的表
+        addNoteV2(schema);
+        addCustomerOrderV2(schema);
+        addPlayHistoryV2(schema);
 
-        new DaoGenerator().generateAll(schema, "../DaoExample/src-gen");
+        //修改的表
+        addLocalPlayHistoryV2(schema);
+        addAmericanNeighbourV2(schema);
+        
+        //新增的表
+        addApkDownloadV2(schema);
+        
+        //删除的上一个版本中的表
+        //LocalMedia
+
+        try {
+            new DaoGenerator().generateAll(schema, "../DaoExample/src-gen");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
-    private static void addNote(Schema schema) {
+    private static void addNoteV1(Schema schema) {
         Entity note = schema.addEntity("Note");
         note.addIdProperty();
         note.addStringProperty("text").notNull();
@@ -58,7 +89,7 @@ public class ExampleDaoGenerator {
         note.addDateProperty("date");
     }
 
-    private static void addCustomerOrder(Schema schema) {
+    private static void addCustomerOrderV1(Schema schema) {
         Entity customer = schema.addEntity("Customer");
         customer.addIdProperty();
         customer.addStringProperty("name").notNull();
@@ -75,7 +106,7 @@ public class ExampleDaoGenerator {
         customerToOrders.orderAsc(orderDate);
     }
 
-    private static void addLocalMedia(Schema schema) {
+    private static void addLocalMediaV1(Schema schema) {
         Entity localMedia = schema.addEntity("LocalMedia");
 
         localMedia.addIdProperty();
@@ -84,7 +115,7 @@ public class ExampleDaoGenerator {
         localMedia.addIntProperty("size");
     }
 
-    private static void addLocalPlayHistory(Schema schema) {
+    private static void addLocalPlayHistoryV1(Schema schema) {
         Entity lp = schema.addEntity("LocalPlayHistory");
         lp.addIdProperty();
         lp.addStringProperty("videoTitle");
@@ -94,7 +125,7 @@ public class ExampleDaoGenerator {
         lp.addStringProperty("localUrl");
     }
 
-    private static void addAmericanNeighbour(Schema schema) {
+    private static void addAmericanNeighbourV1(Schema schema) {
         Entity neighBour = schema.addEntity("AmericanNeighbour");
         neighBour.addIdProperty();
         neighBour.addIntProperty("channel_id");
@@ -104,25 +135,8 @@ public class ExampleDaoGenerator {
         neighBour.addIntProperty("update_time");
         neighBour.addIntProperty("operation_type");
     }
-
-    private static void addApkDownload(Schema schema) {
-        Entity down = schema.addEntity("ApkDownload");
-        down.addStringProperty("package_name");
-        down.addIntProperty("version");
-        down.addStringProperty("tip");
-        down.addStringProperty("name");
-        down.addIntProperty("downing_state");
-        down.addIntProperty("total_filesize");
-        down.addIntProperty("download_beginning");
-        down.addIntProperty("downloaded_size");
-        down.addIntProperty("download_percent");
-        down.addIntProperty("create_time");
-        down.addStringProperty("download_url");
-        down.addStringProperty("save_dir");
-        down.addStringProperty("save_name");
-    }
-
-    private static void addPlayHistory(Schema schema) {
+    
+    private static void addPlayHistoryV1(Schema schema) {
         Entity his = schema.addEntity("PlayHistory");
 
         his.addIdProperty().autoincrement();
@@ -158,6 +172,58 @@ public class ExampleDaoGenerator {
                 }
             }
         }
+    }
+    
+    private static void addNoteV2(Schema schema) {
+        addNoteV1(schema);
+    }
+    
+    private static void addCustomerOrderV2(Schema schema) {
+        addCustomerOrderV1(schema);
+    }
+
+    private static void addLocalPlayHistoryV2(Schema schema) {
+        Entity lp = schema.addEntity("LocalPlayHistory");
+        lp.addIdProperty();
+        lp.addStringProperty("videoTitle");
+        lp.addStringProperty("playedTime");
+        lp.addIntProperty("tvLength");
+        lp.addStringProperty("lastWatchTime");
+        lp.addStringProperty("localUrl");
+        lp.addStringProperty("localUrlNew");//新增字段
+    }
+
+    private static void addAmericanNeighbourV2(Schema schema) {
+        Entity neighBour = schema.addEntity("AmericanNeighbour");
+        neighBour.addIdProperty();
+        neighBour.addIntProperty("channel_id");
+        neighBour.addStringProperty("request_url");
+        neighBour.addStringProperty("reponse");
+        neighBour.addIntProperty("list_index");
+        neighBour.addIntProperty("update_time");
+        neighBour.addIntProperty("operation_type");
+        neighBour.addStringProperty("operation");//新增字段
+    }
+    
+    private static void addApkDownloadV2(Schema schema) {
+        Entity down = schema.addEntity("ApkDownload");
+        down.addStringProperty("package_name");
+        down.addIntProperty("version");
+        down.addStringProperty("tip");
+        down.addStringProperty("name");
+        down.addIntProperty("downing_state");
+        down.addIntProperty("total_filesize");
+        down.addIntProperty("download_beginning");
+        down.addIntProperty("downloaded_size");
+        down.addIntProperty("download_percent");
+        down.addIntProperty("create_time");
+        down.addStringProperty("download_url");
+        down.addStringProperty("save_dir");
+        down.addStringProperty("save_name");
+    }
+
+    private static void addPlayHistoryV2(Schema schema) {
+        addPlayHistoryV1(schema);
     }
 
 }

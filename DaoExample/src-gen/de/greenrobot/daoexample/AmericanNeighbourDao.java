@@ -33,6 +33,7 @@ public class AmericanNeighbourDao extends AbstractDao<AmericanNeighbour, Long> {
         public final static Property List_index = new Property(4, Integer.class, "list_index", false, "LIST_INDEX");
         public final static Property Update_time = new Property(5, Integer.class, "update_time", false, "UPDATE_TIME");
         public final static Property Operation_type = new Property(6, Integer.class, "operation_type", false, "OPERATION_TYPE");
+        public final static Property Operation = new Property(7, String.class, "operation", false, "OPERATION");
     };
 
 
@@ -58,7 +59,8 @@ public class AmericanNeighbourDao extends AbstractDao<AmericanNeighbour, Long> {
                 "'REPONSE' TEXT," + // 3: reponse
                 "'LIST_INDEX' INTEGER," + // 4: list_index
                 "'UPDATE_TIME' INTEGER," + // 5: update_time
-                "'OPERATION_TYPE' INTEGER);"); // 6: operation_type
+                "'OPERATION_TYPE' INTEGER," + // 6: operation_type
+                "'OPERATION' TEXT);"); // 7: operation
     }
 
     /** Drops the underlying database table. */
@@ -106,6 +108,11 @@ public class AmericanNeighbourDao extends AbstractDao<AmericanNeighbour, Long> {
         if (operation_type != null) {
             stmt.bindLong(7, operation_type);
         }
+ 
+        String operation = entity.getOperation();
+        if (operation != null) {
+            stmt.bindString(8, operation);
+        }
     }
 
     /** @inheritdoc */
@@ -124,7 +131,8 @@ public class AmericanNeighbourDao extends AbstractDao<AmericanNeighbour, Long> {
             cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3), // reponse
             cursor.isNull(offset + 4) ? null : cursor.getInt(offset + 4), // list_index
             cursor.isNull(offset + 5) ? null : cursor.getInt(offset + 5), // update_time
-            cursor.isNull(offset + 6) ? null : cursor.getInt(offset + 6) // operation_type
+            cursor.isNull(offset + 6) ? null : cursor.getInt(offset + 6), // operation_type
+            cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7) // operation
         );
         return entity;
     }
@@ -139,6 +147,7 @@ public class AmericanNeighbourDao extends AbstractDao<AmericanNeighbour, Long> {
         entity.setList_index(cursor.isNull(offset + 4) ? null : cursor.getInt(offset + 4));
         entity.setUpdate_time(cursor.isNull(offset + 5) ? null : cursor.getInt(offset + 5));
         entity.setOperation_type(cursor.isNull(offset + 6) ? null : cursor.getInt(offset + 6));
+        entity.setOperation(cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7));
      }
     
     /** @inheritdoc */

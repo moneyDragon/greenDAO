@@ -42,7 +42,6 @@ import org.apache.commons.lang3.time.StopWatch;
 
 import de.greenrobot.dao.query.DeleteQuery;
 import de.greenrobot.dao.query.QueryBuilder;
-import de.greenrobot.daoexample.DaoMaster.CustomOpenHelper;
 import de.greenrobot.daoexample.PlayHistoryDao.Properties;
 
 public class NoteActivity extends ListActivity implements OnClickListener {
@@ -57,8 +56,6 @@ public class NoteActivity extends ListActivity implements OnClickListener {
     private Button mBtnQueryAll;
     private Button mBtnQueryWithParam;
 
-    private DaoMaster daoMaster;
-    private DaoSession daoSession;
     private NoteDao noteDao;
     private PlayHistoryDao playHistoryDao;
 
@@ -75,13 +72,9 @@ public class NoteActivity extends ListActivity implements OnClickListener {
 
         setContentView(R.layout.main);
 
-        CustomOpenHelper helper = new DaoMaster.CustomOpenHelper(this, "notes-db", null);
-        db = helper.getWritableDatabase();
-        daoMaster = new DaoMaster(db);
-        daoSession = daoMaster.newSession();
-        noteDao = daoSession.getNoteDao();
+        noteDao = MyApplication.getInstance().getDaoSession().getNoteDao();
 
-        playHistoryDao = daoSession.getPlayHistoryDao();
+        playHistoryDao = MyApplication.getInstance().getDaoSession().getPlayHistoryDao();
         sw = new StopWatch();
 
         String textColumn = NoteDao.Properties.Text.columnName;

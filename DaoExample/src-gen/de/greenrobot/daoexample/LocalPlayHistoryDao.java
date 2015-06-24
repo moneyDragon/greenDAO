@@ -32,6 +32,7 @@ public class LocalPlayHistoryDao extends AbstractDao<LocalPlayHistory, Long> {
         public final static Property TvLength = new Property(3, Integer.class, "tvLength", false, "TV_LENGTH");
         public final static Property LastWatchTime = new Property(4, String.class, "lastWatchTime", false, "LAST_WATCH_TIME");
         public final static Property LocalUrl = new Property(5, String.class, "localUrl", false, "LOCAL_URL");
+        public final static Property LocalUrlNew = new Property(6, String.class, "localUrlNew", false, "LOCAL_URL_NEW");
     };
 
 
@@ -56,7 +57,8 @@ public class LocalPlayHistoryDao extends AbstractDao<LocalPlayHistory, Long> {
                 "'PLAYED_TIME' TEXT," + // 2: playedTime
                 "'TV_LENGTH' INTEGER," + // 3: tvLength
                 "'LAST_WATCH_TIME' TEXT," + // 4: lastWatchTime
-                "'LOCAL_URL' TEXT);"); // 5: localUrl
+                "'LOCAL_URL' TEXT," + // 5: localUrl
+                "'LOCAL_URL_NEW' TEXT);"); // 6: localUrlNew
     }
 
     /** Drops the underlying database table. */
@@ -99,6 +101,11 @@ public class LocalPlayHistoryDao extends AbstractDao<LocalPlayHistory, Long> {
         if (localUrl != null) {
             stmt.bindString(6, localUrl);
         }
+ 
+        String localUrlNew = entity.getLocalUrlNew();
+        if (localUrlNew != null) {
+            stmt.bindString(7, localUrlNew);
+        }
     }
 
     /** @inheritdoc */
@@ -116,7 +123,8 @@ public class LocalPlayHistoryDao extends AbstractDao<LocalPlayHistory, Long> {
             cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2), // playedTime
             cursor.isNull(offset + 3) ? null : cursor.getInt(offset + 3), // tvLength
             cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4), // lastWatchTime
-            cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5) // localUrl
+            cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5), // localUrl
+            cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6) // localUrlNew
         );
         return entity;
     }
@@ -130,6 +138,7 @@ public class LocalPlayHistoryDao extends AbstractDao<LocalPlayHistory, Long> {
         entity.setTvLength(cursor.isNull(offset + 3) ? null : cursor.getInt(offset + 3));
         entity.setLastWatchTime(cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4));
         entity.setLocalUrl(cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5));
+        entity.setLocalUrlNew(cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6));
      }
     
     /** @inheritdoc */

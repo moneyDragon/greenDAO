@@ -68,6 +68,7 @@ public class MainActivity extends Activity implements OnClickListener {
             case R.id.button2:
                 break;
             case R.id.button3:
+                startActivity(new Intent(getApplicationContext(), PlayHistoryActivity.class));
                 break;
             case R.id.button4:
                 startActivity(new Intent(getApplicationContext(), ToolActivity.class));
