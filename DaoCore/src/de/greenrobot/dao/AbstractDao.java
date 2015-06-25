@@ -16,6 +16,8 @@
 
 package de.greenrobot.dao;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -27,6 +29,7 @@ import android.database.CursorWindow;
 import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
+
 import de.greenrobot.dao.identityscope.IdentityScope;
 import de.greenrobot.dao.identityscope.IdentityScopeLong;
 import de.greenrobot.dao.internal.DaoConfig;
@@ -308,7 +311,8 @@ public abstract class AbstractDao<T, K> {
                 rowId = stmt.executeInsert();
             }
         } else {
-            // Do TX to acquire a connection before locking the stmt to avoid deadlocks
+            // Do TX to acquire a connection before locking the stmt to avoid
+            // deadlocks
             db.beginTransaction();
             try {
                 synchronized (stmt) {
@@ -340,7 +344,8 @@ public abstract class AbstractDao<T, K> {
                 rowId = stmt.executeInsert();
             }
         } else {
-            // Do TX to acquire a connection before locking the stmt to avoid deadlocks
+            // Do TX to acquire a connection before locking the stmt to avoid
+            // deadlocks
             db.beginTransaction();
             try {
                 synchronized (stmt) {
@@ -372,7 +377,8 @@ public abstract class AbstractDao<T, K> {
         List<T> list = new ArrayList<T>(count);
         if (cursor instanceof CrossProcessCursor) {
             CursorWindow window = ((CrossProcessCursor) cursor).getWindow();
-            if (window != null) { // E.g. Roboelectric has no Window at this point
+            if (window != null) { // E.g. Roboelectric has no Window at this
+                                  // point
                 if (window.getNumRows() == count) {
                     cursor = new FastCursor(window);
                 } else {
@@ -438,7 +444,8 @@ public abstract class AbstractDao<T, K> {
                 return entity;
             }
         } else {
-            // Check offset, assume a value !=0 indicating a potential outer join, so check PK
+            // Check offset, assume a value !=0 indicating a potential outer
+            // join, so check PK
             if (offset != 0) {
                 K key = readKey(cursor, offset);
                 if (key == null) {
@@ -506,7 +513,8 @@ public abstract class AbstractDao<T, K> {
                 deleteByKeyInsideSynchronized(key, stmt);
             }
         } else {
-            // Do TX to acquire a connection before locking the stmt to avoid deadlocks
+            // Do TX to acquire a connection before locking the stmt to avoid
+            // deadlocks
             db.beginTransaction();
             try {
                 synchronized (stmt) {
@@ -647,7 +655,40 @@ public abstract class AbstractDao<T, K> {
                 updateInsideSynchronized(entity, stmt, true);
             }
         } else {
-            // Do TX to acquire a connection before locking the stmt to avoid deadlocks
+            // Do TX to acquire a connection before locking the stmt to avoid
+            // deadlocks
+            db.beginTransaction();
+            try {
+                synchronized (stmt) {
+                    updateInsideSynchronized(entity, stmt, true);
+                }
+                db.setTransactionSuccessful();
+            } finally {
+                db.endTransaction();
+            }
+        }
+    }
+
+    public void updateColumnByKey(K key, Property column, T value) throws IllegalAccessException,
+            IllegalArgumentException, InvocationTargetException {
+        assertSinglePk();
+        SQLiteStatement stmt = statements.getUpdateStatement();
+        T entity = load(key);
+        Method[] methods = entity.getClass().getMethods();
+        if (methods != null && methods.length > 0) {
+            for (Method m : methods) {
+                if (m.getName().equals("set" + column.name.substring(0, 1).toUpperCase() + column.name.substring(1))) {
+                    m.invoke(null, value);
+                }
+            }
+        }
+        if (db.isDbLockedByCurrentThread()) {
+            synchronized (stmt) {
+                updateInsideSynchronized(entity, stmt, true);
+            }
+        } else {
+            // Do TX to acquire a connection before locking the stmt to avoid
+            // deadlocks
             db.beginTransaction();
             try {
                 synchronized (stmt) {

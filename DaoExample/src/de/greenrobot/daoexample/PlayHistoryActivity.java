@@ -1,6 +1,5 @@
 package de.greenrobot.daoexample;
 
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -148,12 +147,18 @@ public class PlayHistoryActivity extends Activity {
         
         entity = mPlayHisDao.load(allList.get(499).getId());
         entity.setAlbumName("albumName499");
+        System.out.println(entity);
         entity = mPlayHisDao.load(allList.get(499).getId());
         Log.d(tag, "AlbumName is "+entity.getAlbumName());
+        System.out.println(entity);
+        PlayHistory entity2 = mPlayHisDao.load(allList.get(499).getId());
+        System.out.println(entity2);
         
         mPlayHisDao.refresh(entity);
         entity = mPlayHisDao.load(allList.get(499).getId());
         Log.d(tag, "AlbumName is "+entity.getAlbumName());
+        PlayHistory entity3 = mPlayHisDao.load(allList.get(499).getId());
+        System.out.println(entity3);
     }
 
     @Override
